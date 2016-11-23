@@ -7,7 +7,7 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-RA8875	KEYWORD1
+RA8875OLD	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)

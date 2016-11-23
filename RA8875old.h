@@ -97,8 +97,8 @@ Optional!
 	LATIN/GREEK/ARABIC
 */
 
-#ifndef _RA8875MC_H_
-#define _RA8875MC_H_
+#ifndef _RA8875MC_OLD_H_
+#define _RA8875MC_OLD_H_
 
 #if defined(ENERGIA) // LaunchPad, FraunchPad and StellarPad specific
 #include "Energia.h"
@@ -198,14 +198,23 @@ Not all MCU are capable to work at those speeds. Those parameters should work fi
 #endif
 
 // Colors (RGB565)
-#define	RA8875_BLACK            0x0000
-#define	RA8875_BLUE             0x001F
-#define	RA8875_RED              0xF800
-#define	RA8875_GREEN            0x07E0
-#define RA8875_CYAN             0x07FF
-#define RA8875_MAGENTA          0xF81F
-#define RA8875_YELLOW           0xFFE0  
-#define RA8875_WHITE            0xFFFF
+// Colors preset (RGB565)
+const uint16_t	RA8875_BLACK            = 0x0000;
+const uint16_t 	RA8875_WHITE            = 0xFFFF;
+
+const uint16_t	RA8875_RED              = 0xF800;
+const uint16_t	RA8875_GREEN            = 0x07E0;
+const uint16_t	RA8875_BLUE             = 0x001F;
+
+const uint16_t 	RA8875_CYAN             = RA8875_GREEN | RA8875_BLUE;//0x07FF;
+const uint16_t 	RA8875_MAGENTA          = 0xF81F;
+const uint16_t 	RA8875_YELLOW           = RA8875_RED | RA8875_GREEN;//0xFFE0;  
+const uint16_t 	RA8875_LIGHT_GREY 		= 0xB5B2; // the experimentalist
+const uint16_t 	RA8875_LIGHT_ORANGE 	= 0xFC80; // the experimentalist
+const uint16_t 	RA8875_DARK_ORANGE 		= 0xFB60; // the experimentalist
+const uint16_t 	RA8875_PINK 			= 0xFCFF; // M.Sandercock
+const uint16_t 	RA8875_PURPLE 			= 0x8017; // M.Sandercock
+const uint16_t 	RA8875_GRAYSCALE 		= 2113;//grayscale30 = RA8875_GRAYSCALE*30
 
 
 enum RA8875sizes { RA8875_320x240, RA8875_480x272, RA8875_800x480, Adafruit_480x272, Adafruit_800x480,RA8875_640x480 };
@@ -224,11 +233,11 @@ enum RA8875writes { L1, L2, CGRAM, PATTERN, CURSOR };//TESTING
 typedef struct Point { int32_t x; int32_t y; } tsPoint_t;
 typedef struct  { int32_t An,Bn,Cn,Dn,En,Fn,Divider ; } tsMatrix_t;
 
-class RA8875 : public Print {
+class RA8875OLD : public Print {
  public:
 //------------- Instance -------------------------
-	RA8875(const uint8_t cs, const uint8_t rst);
-	RA8875(const uint8_t cs);
+	RA8875OLD(const uint8_t cs, const uint8_t rst);
+	RA8875OLD(const uint8_t cs);
 //------------- Setup -------------------------
 	void 		begin(const enum RA8875sizes s);
 //------------- Hardware related -------------------------
@@ -265,6 +274,9 @@ class RA8875 : public Print {
 	void		showUserChar(uint8_t symbolAddrs,uint8_t wide=0);//0...255
 	void    	setFontScale(uint8_t scale);//0..3
 	void    	setFontSize(enum RA8875tsize ts,boolean halfSize=false);//X16,X24,X32
+    void		setRotation(uint8_t rotation); //rotate text and graphics
+	uint8_t		getRotation(); //return the current rotation 0-3
+	boolean		isPortrait(void);
 	void 		setFontSpacing(uint8_t spc);//0:disabled ... 63:pix max
 	void 		setFontRotate(boolean rot);//true = 90 degrees
 	void 		setFontInterline(uint8_t pix);//0...63 pix
@@ -347,7 +359,7 @@ virtual size_t write(const uint8_t *buffer, size_t size) {
 	return size;
 }
 using Print::write;
-
+int16_t 		 			   RA8875_WIDTH, 	   RA8875_HEIGHT;//absolute
  private:
 	//------------- VARS ----------------------------
 	volatile uint32_t		_spiSpeed;//for SPI transactions
@@ -362,6 +374,9 @@ using Print::write;
 	#if defined(USE_RA8875_KEYMATRIX)
 	bool					_keyMatrixEnabled;
 	#endif
+
+	bool							_portrait;
+	uint8_t							_rotation;
 	//----------------------------------------
 	uint16_t 		 		_width, _height;
 	uint16_t				_cursorX, _cursorY;//try to internally track text cursor...

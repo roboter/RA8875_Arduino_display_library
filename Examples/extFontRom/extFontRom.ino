@@ -20,7 +20,7 @@ Each font ROM has it's encoding so follow font rom datasheet!
  ******************************************************************/
 
 #include <SPI.h>
-#include <RA8875.h>
+#include <RA8875old.h>
 
 //Arduino DUE,Arduino mega2560
 #define RA8875_INT 23 
@@ -40,7 +40,7 @@ SS:    PD_1
 */
 //#else
 
-RA8875 tft = RA8875(RA8875_CS,RA8875_RESET);//Teensy3/arduino's
+RA8875OLD tft = RA8875OLD(RA8875_CS,RA8875_RESET);//Teensy3/arduino's
 
 //#endif
 
